@@ -770,7 +770,7 @@
     </main>
   </div>
 
-  <script>
+ <script>
     // === View-Navigation (Sidebar) ===
     (function() {
       const navItems = document.querySelectorAll('.nav-item');
@@ -801,7 +801,7 @@
       showView('portfolio');
     })();
 
-    // === Daten aus statischer projects.json laden ===
+    // === Daten aus statischen JSON-Dateien laden ===
     const DATA_BASE = './data';
 
     async function loadJson(file) {
@@ -810,6 +810,7 @@
       return await res.json();
     }
 
+    // --- Portfolio (Projects) ---
     async function initPortfolio() {
       try {
         const projects = await loadJson('projects.json');
@@ -892,8 +893,74 @@
       });
     }
 
-    // Portfolio beim Laden initialisieren
+    // --- Executive (Risks) ---
+    async function initExecutive() {
+      try {
+        const risks = await loadJson('risks.json');
+        renderExecutiveTopRisks(risks);
+        renderExecutiveKPIs(risks);
+      } catch (err) {
+        console.warn('Konnte risks.json nicht laden, nutze statische Demos:', err);
+      }
+    }
+
+    function renderExecutiveTopRisks(risks) {
+      const tbody = document.querySelector('#view-executive table.top-risks-table tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      // Top 5 nach Criticality
+      const top = [...risks]
+        .sort((a, b) => b.criticality - a.criticality)
+        .slice(0, 5);
+
+      top.forEach(risk => {
+        const tr = document.createElement('tr');
+
+        const tdTitle = document.createElement('td');
+        tdTitle.textContent = `${risk.id}: ${risk.title}`;
+
+        const tdOwner = document.createElement('td');
+        tdOwner.textContent = risk.owner || '';
+
+        const tdResidual = document.createElement('td');
+        const span = document.createElement('span');
+        span.classList.add('severity-pill');
+        if (risk.residualLevel === 'Critical') span.classList.add('severity-critical');
+        else if (risk.residualLevel === 'High') span.classList.add('severity-high');
+        else span.classList.add('severity-medium');
+        span.textContent = risk.residualLevel || 'Medium';
+        tdResidual.appendChild(span);
+
+        const tdStatus = document.createElement('td');
+        tdStatus.textContent = risk.status || '';
+
+        tr.appendChild(tdTitle);
+        tr.appendChild(tdOwner);
+        tr.appendChild(tdResidual);
+        tr.appendChild(tdStatus);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderExecutiveKPIs(risks) {
+      const totalCritical = risks.filter(r => r.residualLevel === 'Critical').length;
+      const totalHigh = risks.filter(r => r.residualLevel === 'High').length;
+      const totalMedium = risks.filter(r => r.residualLevel === 'Medium').length;
+
+      // Karte: Kritische Risiken (2. Card im Executive-Grid)
+      const criticalElem = document.querySelector('#view-executive .grid:nth-of-type(1) .card:nth-of-type(2) .kpi-value');
+      if (criticalElem) criticalElem.textContent = String(totalCritical);
+
+      // Optional könntest du auch andere KPIs dynamisch machen,
+      // z.B. Gesamtanzahl Risiken in einer freien Karte etc.
+      console.log('Risiko-Verteilung:', { totalCritical, totalHigh, totalMedium });
+    }
+
+    // Initialisierung beim Laden
     initPortfolio();
+    initExecutive();
   </script>
 </body>
 </html>
