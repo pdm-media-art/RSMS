@@ -1,1 +1,26 @@
-
+[
+  {
+    "id": "M-101",
+    "riskId": "R-001",
+    "name": "Ausbau Perimeter-Schutz",
+    "status": "In Umsetzung",
+    "category": "Physical",
+    "type": "Preventive"
+  },
+  {
+    "id": "M-102",
+    "riskId": "R-001",
+    "name": "Erweiterung Videoüberwachung",
+    "status": "Geplant",
+    "category": "Physical",
+    "type": "Detective"
+  },
+  {
+    "id": "M-103",
+    "riskId": "R-001",
+    "name": "Schulung Sicherheitspersonal",
+    "status": "Abgeschlossen",
+    "category": "Personnel",
+    "type": "Preventive"
+  }
+]
