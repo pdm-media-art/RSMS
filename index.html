@@ -4,6 +4,23 @@
   <meta charset="UTF-8" />
   <title>RSMS – Alle Dashboards (Demo)</title>
   <style>
+    :root {
+      --primary: #1565c0;
+      --primary-light: #1e88e5;
+      --primary-soft: #e3f2fd;
+      --bg: #f3f5f7;
+      --card-bg: #ffffff;
+      --border: #dde2eb;
+      --text-main: #222;
+      --text-muted: #6f7a88;
+      --danger: #d32f2f;
+      --danger-soft: #ffebee;
+      --warning: #f9a825;
+      --warning-soft: #fff8e1;
+      --success: #2e7d32;
+      --success-soft: #e8f5e9;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -12,14 +29,14 @@
     }
 
     body {
-      background-color: #f5f5f5;
-      color: #222;
+      background-color: var(--bg);
+      color: var(--text-main);
     }
 
     .layout {
       display: grid;
       grid-template-columns: 260px 1fr;
-      grid-template-rows: 60px 1fr;
+      grid-template-rows: 64px 1fr;
       height: 100vh;
       grid-template-areas:
         "sidebar header"
@@ -31,15 +48,21 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      background-color: #1976d2;
+      padding: 0 20px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
       color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
       z-index: 2;
     }
 
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
     .header-title {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 600;
     }
 
@@ -48,61 +71,73 @@
       opacity: 0.9;
     }
 
+    .header-right {
+      font-size: 12px;
+      opacity: 0.95;
+    }
+
     .sidebar {
       grid-area: sidebar;
-      background-color: #ffffff;
-      border-right: 1px solid #ddd;
-      padding-top: 60px;
+      background-color: #101827;
+      color: #cbd5f5;
+      padding-top: 64px;
       display: flex;
       flex-direction: column;
+      border-right: 1px solid #0b1220;
     }
 
     .sidebar h2 {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      padding: 16px;
-      color: #555;
+      padding: 16px 18px 6px 18px;
+      color: #9ca3c8;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
 
     .nav-list {
       list-style: none;
+      padding: 4px 0 16px 0;
     }
 
     .nav-item {
-      padding: 10px 16px;
+      padding: 8px 18px;
       cursor: pointer;
       display: flex;
       align-items: center;
       font-size: 14px;
-      color: #333;
+      color: #e5e7ff;
       user-select: none;
+      transition: background 0.15s, color 0.15s, padding-left 0.15s;
+      border-left: 3px solid transparent;
     }
 
     .nav-item:hover {
-      background-color: #f0f0f0;
+      background-color: rgba(148, 163, 255, 0.15);
+      padding-left: 22px;
     }
 
     .nav-item.active {
-      background-color: #e3f2fd;
-      border-left: 3px solid #1976d2;
-      padding-left: 13px;
+      background-color: rgba(59, 130, 246, 0.15);
+      border-left-color: #60a5fa;
+      padding-left: 22px;
       font-weight: 600;
+      color: #ffffff;
     }
 
     .nav-icon {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       display: inline-block;
-      margin-right: 8px;
-      border-radius: 3px;
-      background-color: #90caf9;
+      margin-right: 10px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #60a5fa, #818cf8);
+      opacity: 0.85;
     }
 
     .main {
       grid-area: main;
-      padding: 80px 24px 24px 24px;
+      padding: 86px 24px 24px 24px;
       overflow-y: auto;
     }
 
@@ -114,8 +149,8 @@
 
     .page-subtitle {
       font-size: 13px;
-      margin-bottom: 16px;
-      color: #666;
+      margin-bottom: 20px;
+      color: var(--text-muted);
     }
 
     .grid {
@@ -125,19 +160,20 @@
     }
 
     .card {
-      background-color: #fff;
-      border-radius: 6px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.08);
+      border: 1px solid var(--border);
     }
 
     .card-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       margin-bottom: 8px;
-      color: #555;
+      color: #4b5563;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
     }
 
     .card-content {
@@ -148,25 +184,25 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .status-circle {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       border: 2px solid #ccc;
-      background-color: #c8e6c9;
+      background-color: var(--success-soft);
     }
 
     .status-circle.yellow {
-      background-color: #fff9c4;
-      border-color: #fbc02d;
+      background-color: var(--warning-soft);
+      border-color: var(--warning);
     }
 
     .status-circle.red {
-      background-color: #ffcdd2;
-      border-color: #e53935;
+      background-color: var(--danger-soft);
+      border-color: var(--danger);
     }
 
     .status-label {
@@ -175,7 +211,7 @@
 
     .small-text {
       font-size: 12px;
-      color: #777;
+      color: var(--text-muted);
     }
 
     .top-risks-table {
@@ -185,16 +221,28 @@
       font-size: 13px;
     }
 
+    .top-risks-table thead tr {
+      background-color: #f1f5f9;
+    }
+
     .top-risks-table th,
     .top-risks-table td {
       padding: 6px 8px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #e5e7eb;
       text-align: left;
+    }
+
+    .top-risks-table th {
+      font-size: 12px;
+      font-weight: 600;
+      color: #4b5563;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .severity-pill {
       display: inline-block;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 999px;
       font-size: 11px;
       font-weight: 600;
@@ -202,14 +250,14 @@
     }
 
     .severity-critical {
-      background-color: #d32f2f;
+      background-color: var(--danger);
     }
     .severity-high {
-      background-color: #f57c00;
+      background-color: #f97316;
     }
     .severity-medium {
-      background-color: #fbc02d;
-      color: #333;
+      background-color: #facc15;
+      color: #1f2933;
     }
 
     .kpi-value {
@@ -220,7 +268,7 @@
 
     .kpi-label {
       font-size: 12px;
-      color: #666;
+      color: var(--text-muted);
     }
 
     .kpi-trend {
@@ -229,15 +277,15 @@
     }
 
     .trend-up {
-      color: #d32f2f;
+      color: var(--danger);
     }
 
     .trend-down {
-      color: #388e3c;
+      color: var(--success);
     }
 
     .trend-stable {
-      color: #757575;
+      color: var(--text-muted);
     }
 
     .two-column {
@@ -260,34 +308,37 @@
       display: flex;
       gap: 16px;
       overflow-x: auto;
+      padding-bottom: 4px;
     }
 
     .kanban-column {
       min-width: 220px;
-      background-color: #fafafa;
+      background-color: #f9fafb;
       border-radius: 6px;
-      border: 1px solid #ddd;
+      border: 1px solid #e5e7eb;
       padding: 8px;
-      max-height: 400px;
+      max-height: 420px;
       display: flex;
       flex-direction: column;
     }
 
     .kanban-column-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       margin-bottom: 8px;
       text-transform: uppercase;
-      color: #555;
+      color: #4b5563;
+      letter-spacing: 0.06em;
     }
 
     .kanban-card {
-      background-color: #fff;
+      background-color: #ffffff;
       border-radius: 4px;
       padding: 8px;
       margin-bottom: 8px;
       font-size: 13px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 2px rgba(15,23,42,0.06);
+      border: 1px solid #e5e7eb;
     }
 
     .kanban-card-title {
@@ -297,18 +348,20 @@
 
     .kanban-card-meta {
       font-size: 11px;
-      color: #777;
+      color: var(--text-muted);
     }
 
     .form-field {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-size: 13px;
     }
 
     .form-field label {
       display: block;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
       font-weight: 600;
+      font-size: 12px;
+      color: #4b5563;
     }
 
     .form-field input,
@@ -317,8 +370,13 @@
       width: 100%;
       padding: 6px 8px;
       border-radius: 4px;
-      border: 1px solid #ccc;
+      border: 1px solid #d1d5db;
       font-size: 13px;
+      background-color: #f9fafb;
+    }
+
+    .form-field textarea {
+      resize: vertical;
     }
 
     .pill-badge {
@@ -326,8 +384,8 @@
       padding: 2px 6px;
       border-radius: 999px;
       font-size: 11px;
-      background-color: #e3f2fd;
-      color: #0d47a1;
+      background-color: var(--primary-soft);
+      color: var(--primary);
       margin-right: 4px;
       margin-bottom: 4px;
     }
@@ -341,40 +399,53 @@
 
     .matrix-table th,
     .matrix-table td {
-      border: 1px solid #ddd;
+      border: 1px solid #e5e7eb;
       padding: 6px 8px;
       text-align: center;
     }
 
     .matrix-table th {
-      background-color: #f0f0f0;
+      background-color: #f3f4f6;
+      font-size: 12px;
+      font-weight: 600;
+      color: #4b5563;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .zone-badge {
       display: inline-block;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
       font-size: 11px;
       color: #fff;
+      font-weight: 500;
     }
 
     .zone-high {
-      background-color: #d32f2f;
+      background-color: var(--danger);
     }
     .zone-elevated {
-      background-color: #f9a825;
+      background-color: #f59e0b;
     }
     .zone-standard {
-      background-color: #1976d2;
+      background-color: var(--primary);
     }
     .zone-public {
-      background-color: #757575;
+      background-color: #6b7280;
+    }
+
+    .view {
+      display: none;
+    }
+    .view.active {
+      display: block;
     }
 
     @media (max-width: 900px) {
       .layout {
         grid-template-columns: 1fr;
-        grid-template-rows: 60px auto auto;
+        grid-template-rows: 64px auto auto;
         grid-template-areas:
           "header"
           "sidebar"
@@ -383,13 +454,12 @@
 
       .sidebar {
         padding-top: 0;
-        position: static;
         border-right: none;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #0b1220;
       }
 
       .main {
-        padding-top: 16px;
+        padding-top: 20px;
       }
 
       .two-column,
@@ -398,14 +468,6 @@
       .half-width {
         grid-column: span 12;
       }
-    }
-
-    /* Views generisch ausblendbar */
-    .view {
-      display: none;
-    }
-    .view.active {
-      display: block;
     }
   </style>
 </head>
@@ -452,12 +514,12 @@
 
     <!-- Header -->
     <header class="header">
-      <div>
+      <div class="header-left">
         <div class="header-title">RSMS – Risk Security Management System</div>
-        <div class="header-subtitle">Demo UI basierend auf dem SRS</div>
+        <div class="header-subtitle">Visual Mockups der 8 Kern-Dashboards (basierend auf SRS)</div>
       </div>
-      <div class="header-subtitle">
-        Rolle: Management / Consultant
+      <div class="header-right">
+        Rolle: Management &amp; Consultants
       </div>
     </header>
 
@@ -467,7 +529,7 @@
       <section class="view active" id="view-portfolio">
         <div class="page-title">Portfolio Dashboard</div>
         <div class="page-subtitle">
-          Übersicht über alle Sicherheitsprojekte, Status und KPIs.
+          Übersicht über alle Sicherheitsprojekte, Status, Gate-Fortschritt und zentrale KPIs.
         </div>
 
         <div class="grid" style="margin-bottom: 16px;">
@@ -516,7 +578,7 @@
                 </tbody>
               </table>
               <div class="small-text" style="margin-top: 8px;">
-                Darstellung der wichtigsten Projekte; im echten System filter- und klickbar.
+                Im System würde ein Klick auf ein Projekt in dessen Detailansicht wechseln.
               </div>
             </div>
           </div>
@@ -525,22 +587,22 @@
             <div class="card-title">Portfolio-KPIs</div>
             <div class="card-content">
               <div class="grid">
-                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                <div class="card half-width" style="box-shadow:none; border:1px dashed var(--border);">
                   <div class="kpi-value">12</div>
                   <div class="kpi-label">aktive Projekte</div>
                   <div class="kpi-trend trend-up">▲ +2 vs. Vorjahr</div>
                 </div>
-                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                <div class="card half-width" style="box-shadow:none; border:1px dashed var(--border);">
                   <div class="kpi-value">4</div>
-                  <div class="kpi-label">Projekte in kritischem Status</div>
+                  <div class="kpi-label">Projekte im kritischen Status</div>
                   <div class="kpi-trend trend-up">▲ +1</div>
                 </div>
-                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                <div class="card half-width" style="box-shadow:none; border:1px dashed var(--border);">
                   <div class="kpi-value">68%</div>
                   <div class="kpi-label">Durchschnittlicher Maßnahmen-Fortschritt</div>
                   <div class="kpi-trend trend-stable">■ stabil</div>
                 </div>
-                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                <div class="card half-width" style="box-shadow:none; border:1px dashed var(--border);">
                   <div class="kpi-value">74%</div>
                   <div class="kpi-label">Budgetverbrauch (gesamt)</div>
                   <div class="kpi-trend trend-down">▼ -3% vs. Plan</div>
@@ -558,15 +620,15 @@
                 <thead>
                   <tr>
                     <th>Projekt</th>
-                    <th>Phase 1</th>
-                    <th>Phase 2</th>
-                    <th>Phase 3</th>
-                    <th>Phase 4</th>
-                    <th>Phase 5</th>
-                    <th>Phase 6</th>
-                    <th>Phase 7</th>
-                    <th>Phase 8</th>
-                    <th>Phase 9</th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -587,7 +649,7 @@
                     <td>✔</td>
                     <td>✔</td>
                     <td>●</td>
-                    <td>-</td>
+                    <td>○</td>
                     <td>-</td>
                     <td>-</td>
                     <td>-</td>
@@ -609,7 +671,7 @@
                 </tbody>
               </table>
               <div class="small-text" style="margin-top: 8px;">
-                ✔ abgeschlossen · ● in Arbeit · ○ geplant · - nicht gestartet.
+                Legende: ✔ abgeschlossen · ● in Arbeit · ○ geplant · - nicht gestartet.
               </div>
             </div>
           </div>
@@ -620,7 +682,7 @@
       <section class="view" id="view-process">
         <div class="page-title">Process Dashboard (Kanban)</div>
         <div class="page-subtitle">
-          Visualisierung der Workflow-Items über alle Phasen (Backlog bis Done).
+          Visualisierung aller Workflow-Items über den 9-Phasen-Prozess (Backlog bis Done).
         </div>
 
         <div class="card full-width">
@@ -688,7 +750,7 @@
               </div>
             </div>
             <div class="small-text" style="margin-top: 8px;">
-              Im echten System: Drag & Drop zwischen Spalten, Filter nach Verantwortlichen, Fälligkeitsdatum, Typ etc.
+              Im produktiven System wären Karten drag & drop-fähig, inkl. Filter und Swimlanes.
             </div>
           </div>
         </div>
@@ -698,7 +760,7 @@
       <section class="view" id="view-input">
         <div class="page-title">Input Dashboard (Formulare, Checklisten, AI)</div>
         <div class="page-subtitle">
-          Zentrale Erfassung von Daten für Kick-off, Kontext, Analysen (PMESII-PT, CARVER, MK-SALUTE).
+          Zentrale Erfassung von Projektdaten, Kontext und Analysen (PMESII-PT, CARVER, MK-SALUTE).
         </div>
 
         <div class="grid" style="margin-bottom: 16px;">
@@ -738,7 +800,7 @@
               <div class="form-field">
                 <label>Politik (P)</label>
                 <input type="range" min="1" max="10" value="6" />
-                <div class="small-text">Aktuelle Lage: Moderater politischer Druck, bevorstehende Wahlen.</div>
+                <div class="small-text">Moderater politischer Druck, bevorstehende Wahlen.</div>
               </div>
               <div class="form-field">
                 <label>Militär/Sicherheit (M)</label>
@@ -751,7 +813,7 @@
                 <div class="small-text">Wirtschaftlich angespannt, Lieferkettenrisiken.</div>
               </div>
               <div class="small-text" style="margin-top: 8px;">
-                Im echten System: Radar-Chart & Heatmap über alle Faktoren und Standorte.
+                Im System: Radar-Chart & Heatmap mit allen Faktoren und Standorten.
               </div>
             </div>
           </div>
@@ -788,7 +850,7 @@
                 <input type="number" min="1" max="5" value="4" />
               </div>
               <div class="small-text">
-                Score-Berechnung und Priorisierung geschehen im Backend; hier nur UI-Mock.
+                Score-Berechnung & Priorisierung erfolgen später im Backend.
               </div>
             </div>
           </div>
@@ -818,7 +880,7 @@
                 </select>
               </div>
               <div class="small-text">
-                Im System würden hier Radar-Charts und historische Trends angezeigt.
+                Im System: vollständiges MK-SALUTE-Dashboard mit Radar-Chart & Historie.
               </div>
             </div>
           </div>
@@ -829,7 +891,7 @@
       <section class="view" id="view-framework">
         <div class="page-title">Framework & Governance Dashboard</div>
         <div class="page-subtitle">
-          Darstellung des Compliance-Status über verschiedene Standards und Governance-Artefakte.
+          Darstellung des Compliance-Status über Standards und Überblick über Governance-Artefakte.
         </div>
 
         <div class="grid" style="margin-bottom: 16px;">
@@ -885,7 +947,7 @@
                 <li><strong>BCM-Rahmenwerk</strong> – Version 1.0 – Nächste Review: 01.07.2026 – Status: Freigegeben</li>
               </ul>
               <div class="small-text" style="margin-top: 8px;">
-                Im System wären hier Links zu Dokumenten, Versionierung & Freigabe-Workflow.
+                Im System mit Versionierung, Review-Workflow und Verknüpfung zu Kontrollen/Maßnahmen.
               </div>
             </div>
           </div>
@@ -896,7 +958,7 @@
             <div class="card-title">Abhängigkeiten: Policy → Prozess → Kontrolle → Maßnahme</div>
             <div class="card-content">
               <div class="small-text">
-                Beispiel für eine Abhängigkeitskette:
+                Beispielkette:
               </div>
               <ul class="small-text" style="line-height: 1.7; margin-top: 8px;">
                 <li><strong>Policy:</strong> Zugangskontrollrichtlinie</li>
@@ -905,7 +967,7 @@
                 <li><strong>Maßnahme:</strong> Automatisierter Abgleich HR-System / IAM-System</li>
               </ul>
               <div class="small-text" style="margin-top: 8px;">
-                Im echten System würde hier ein interaktiver Graph mit Impact-Analyse angezeigt.
+                Im produktiven System als interaktiver Graph visualisiert.
               </div>
             </div>
           </div>
@@ -916,7 +978,7 @@
       <section class="view" id="view-object">
         <div class="page-title">Object/Plan Dashboard (2D/3D – Mock)</div>
         <div class="page-subtitle">
-          Übersicht der Standorte, Zonen, Assets und Maßnahmen auf einer abstrakten Planansicht.
+          Abstrakte Darstellung der Standorte, Zonen, Assets und Maßnahmen.
         </div>
 
         <div class="grid">
@@ -929,7 +991,7 @@
                 <li><strong>Standort B</strong> – Lat: 50.1, Lon: 8.6 – 2 Gebäude, 8 Zonen</li>
               </ul>
               <div class="small-text" style="margin-top: 8px;">
-                Im System: Kartenintegration (GIS), Plan-Upload (PDF/CAD), Layersteuerung.
+                Im System: Karte, Grundrisse, Layersteuerung und Zonenzeichnung.
               </div>
             </div>
           </div>
@@ -969,7 +1031,7 @@
                 </tbody>
               </table>
               <div class="small-text" style="margin-top: 8px;">
-                Farbcodierung angelehnt an High/Elevated/Standard/Public-Zonen.
+                Farbcodierung angelehnt an High/Elevated/Standard/Public-Sicherheitszonen.
               </div>
             </div>
           </div>
@@ -1048,7 +1110,7 @@
                   <tr>
                     <td>R-002: Ransomware-Angriff Zentrale</td>
                     <td>CISO</td>
-                    <td><span classseverity-pill severity-critical">Critical</span></td>
+                    <td><span class="severity-pill severity-critical">Critical</span></td>
                     <td>Maßnahmenportfolio geplant</td>
                   </tr>
                   <tr>
@@ -1136,7 +1198,7 @@
       <section class="view" id="view-risk">
         <div class="page-title">Risk & Measures Dashboard</div>
         <div class="page-subtitle">
-          Detailansicht des Risikoregisters und verknüpfter Maßnahmen.
+          Detailansicht des Risikoregisters und verknüpfter Maßnahmen (4R-Behandlung).
         </div>
 
         <div class="grid" style="margin-bottom: 16px;">
@@ -1224,7 +1286,7 @@
       <section class="view" id="view-emergency">
         <div class="page-title">Emergency & Crisis Management Dashboard</div>
         <div class="page-subtitle">
-          Echtzeit-Übersicht über Warnungen, aktive Pläne, Ressourcen und Kommunikation (Mock).
+          Übersicht über Warnungen, aktive Pläne, Ressourcen und Kommunikationsstatus (Mock).
         </div>
 
         <div class="grid" style="margin-bottom:16px;">
@@ -1268,7 +1330,7 @@
             <div class="card-content">
               <ul class="small-text" style="line-height:1.7;">
                 <li>Letzte Alarmierung: 05.01.2026 – Thema: Evakuierungsübung HQ</li>
-                <li>SMS-Zustellung: 99% – E-Mail: 98% – App/PUSH: 95%</li>
+                <li>SMS-Zustellung: 99% · E-Mail: 98% · App/PUSH: 95%</li>
                 <li>Offene Rückmeldungen: 3 (noch nicht bestätigt)</li>
               </ul>
             </div>
@@ -1280,7 +1342,7 @@
   </div>
 
   <script>
-    // Einfaches Umschalten der Views anhand data-view-Attribut
+    // View-Umschaltung anhand data-view-Attribut
     (function() {
       const navItems = document.querySelectorAll('.nav-item');
       const views = document.querySelectorAll('.view');
@@ -1306,8 +1368,7 @@
         });
       });
 
-      // Initial: Portfolio sichtbar (entspricht aktiver Nav)
-      showView('portfolio');
+      showView('portfolio'); // initial
     })();
   </script>
 </body>
