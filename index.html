@@ -1468,4 +1468,131 @@
     loadProjects();
   </script>
 </body>
+<script>
+    // === View-Navigation (Sidebar) ===
+    (function() {
+      const navItems = document.querySelectorAll('.nav-item');
+      const views = document.querySelectorAll('.view');
+
+      function showView(name) {
+        views.forEach(v => {
+          if (v.id === 'view-' + name) {
+            v.classList.add('active');
+          } else {
+            v.classList.remove('active');
+          }
+        });
+      }
+
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const name = item.getAttribute('data-view');
+          if (!name) return;
+
+          navItems.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          showView(name);
+        });
+      });
+
+      // Initial: Portfolio anzeigen
+      showView('portfolio');
+    })();
+
+    // === Daten aus statischer projects.json laden ===
+
+    const DATA_BASE = './data';
+
+    async function loadJson(file) {
+      const res = await fetch(`${DATA_BASE}/${file}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status} beim Laden von ${file}`);
+      return await res.json();
+    }
+
+    async function initPortfolio() {
+      try {
+        const projects = await loadJson('projects.json');
+        renderPortfolioProjects(projects);
+        renderPortfolioPhases(projects);
+      } catch (err) {
+        console.warn('Konnte projects.json nicht laden, nutze statische Demos:', err);
+      }
+    }
+
+    function renderPortfolioProjects(projects) {
+      const table = document.querySelector('#view-portfolio table.top-risks-table tbody');
+      if (!table) return;
+      table.innerHTML = '';
+
+      projects.forEach(p => {
+        const tr = document.createElement('tr');
+
+        const tdName = document.createElement('td');
+        tdName.textContent = `${p.id} ${p.name}`;
+
+        const tdType = document.createElement('td');
+        tdType.textContent = p.type || '';
+
+        const tdStatus = document.createElement('td');
+        tdStatus.textContent = p.status || '';
+
+        const tdRisk = document.createElement('td');
+        const span = document.createElement('span');
+        span.classList.add('severity-pill');
+        if (p.riskLevel === 'Critical') span.classList.add('severity-critical');
+        else if (p.riskLevel === 'High') span.classList.add('severity-high');
+        else span.classList.add('severity-medium');
+        span.textContent = p.riskLevel || 'Medium';
+        tdRisk.appendChild(span);
+
+        const tdPM = document.createElement('td');
+        tdPM.textContent = p.projectManager || '';
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdType);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdRisk);
+        tr.appendChild(tdPM);
+
+        table.appendChild(tr);
+      });
+    }
+
+    function renderPortfolioPhases(projects) {
+      const body = document.querySelector('#view-portfolio table.matrix-table tbody');
+      if (!body) return;
+      body.innerHTML = '';
+
+      projects.forEach(p => {
+        const tr = document.createElement('tr');
+
+        const tdProject = document.createElement('td');
+        tdProject.textContent = p.name || p.id;
+        tr.appendChild(tdProject);
+
+        for (let i = 0; i < 9; i++) {
+          const td = document.createElement('td');
+          const v = (p.phases || [])[i];
+
+          if (v === true) {
+            td.textContent = '✔';
+          } else if (v === 'in-progress') {
+            td.textContent = '●';
+          } else if (v === 'planned') {
+            td.textContent = '○';
+          } else {
+            td.textContent = '-';
+          }
+
+          tr.appendChild(td);
+        }
+
+        body.appendChild(tr);
+      });
+    }
+
+    // Portfolio beim Laden initialisieren
+    initPortfolio();
+  </script>
+</body>
 </html>
