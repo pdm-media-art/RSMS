@@ -1341,8 +1341,8 @@
     </main>
   </div>
 
-  <script>
-    // View-Umschaltung anhand data-view-Attribut
+ <script>
+    // Basis-UI: View-Umschaltung anhand data-view-Attribut
     (function() {
       const navItems = document.querySelectorAll('.nav-item');
       const views = document.querySelectorAll('.view');
@@ -1370,6 +1370,102 @@
 
       showView('portfolio'); // initial
     })();
+
+    // === Interaktivität: Daten vom Backend laden ===
+
+    const API_BASE = 'http://localhost:3000/api';
+
+    async function loadProjects() {
+      try {
+        const res = await fetch(API_BASE + '/projects');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const projects = await res.json();
+        renderPortfolioProjects(projects);
+        renderPortfolioPhases(projects);
+      } catch (err) {
+        console.error('Fehler beim Laden der Projekte:', err);
+      }
+    }
+
+    function renderPortfolioProjects(projects) {
+      // Tabelle im Portfolio-Dashboard finden
+      const table = document.querySelector('#view-portfolio table.top-risks-table tbody');
+      if (!table) return;
+
+      table.innerHTML = ''; // bisherigen statischen Inhalt löschen
+
+      projects.forEach(p => {
+        const tr = document.createElement('tr');
+
+        const tdName = document.createElement('td');
+        tdName.textContent = `${p.id} ${p.name}`;
+
+        const tdType = document.createElement('td');
+        tdType.textContent = p.type || '';
+
+        const tdStatus = document.createElement('td');
+        tdStatus.textContent = p.status || '';
+
+        const tdRisk = document.createElement('td');
+        const span = document.createElement('span');
+        span.classList.add('severity-pill');
+        if (p.riskLevel === 'Critical') span.classList.add('severity-critical');
+        else if (p.riskLevel === 'High') span.classList.add('severity-high');
+        else span.classList.add('severity-medium');
+        span.textContent = p.riskLevel || 'Medium';
+        tdRisk.appendChild(span);
+
+        const tdPM = document.createElement('td');
+        tdPM.textContent = p.projectManager || '';
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdType);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdRisk);
+        tr.appendChild(tdPM);
+
+        table.appendChild(tr);
+      });
+    }
+
+    function renderPortfolioPhases(projects) {
+      // Matrix-Tabelle für die Phasen im Portfolio-Dashboard finden
+      const body = document.querySelector('#view-portfolio table.matrix-table tbody');
+      if (!body) return;
+
+      body.innerHTML = ''; // bisherigen statischen Inhalt löschen
+
+      projects.forEach(p => {
+        const tr = document.createElement('tr');
+
+        const tdProject = document.createElement('td');
+        tdProject.textContent = p.name || p.id;
+        tr.appendChild(tdProject);
+
+        // p.phases ist im JSON ein Array mit 9 Einträgen: true / "in-progress" / "planned" / null
+        for (let i = 0; i < 9; i++) {
+          const td = document.createElement('td');
+          const v = (p.phases || [])[i];
+
+          if (v === true) {
+            td.textContent = '✔';
+          } else if (v === 'in-progress') {
+            td.textContent = '●';
+          } else if (v === 'planned') {
+            td.textContent = '○';
+          } else {
+            td.textContent = '-';
+          }
+
+          tr.appendChild(td);
+        }
+
+        body.appendChild(tr);
+      });
+    }
+
+    // Beim Laden der Seite Projekte holen
+    loadProjects();
   </script>
 </body>
 </html>
