@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>RSMS – Executive Dashboard (Demo)</title>
+  <title>RSMS – Alle Dashboards (Demo)</title>
   <style>
     * {
       box-sizing: border-box;
@@ -30,6 +30,7 @@
       grid-area: header;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 0 16px;
       background-color: #1976d2;
       color: #fff;
@@ -42,11 +43,16 @@
       font-weight: 600;
     }
 
+    .header-subtitle {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
     .sidebar {
       grid-area: sidebar;
       background-color: #ffffff;
       border-right: 1px solid #ddd;
-      padding-top: 60px; /* Platz für Headerhöhe */
+      padding-top: 60px;
       display: flex;
       flex-direction: column;
     }
@@ -71,6 +77,7 @@
       align-items: center;
       font-size: 14px;
       color: #333;
+      user-select: none;
     }
 
     .nav-item:hover {
@@ -102,7 +109,13 @@
     .page-title {
       font-size: 24px;
       font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
       margin-bottom: 16px;
+      color: #666;
     }
 
     .grid {
@@ -143,7 +156,7 @@
       height: 16px;
       border-radius: 50%;
       border: 2px solid #ccc;
-      background-color: #c8e6c9; /* erstmal Grün */
+      background-color: #c8e6c9;
     }
 
     .status-circle.yellow {
@@ -239,6 +252,125 @@
       grid-column: span 3;
     }
 
+    .half-width {
+      grid-column: span 6;
+    }
+
+    .kanban-board {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+    }
+
+    .kanban-column {
+      min-width: 220px;
+      background-color: #fafafa;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      padding: 8px;
+      max-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kanban-column-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .kanban-card {
+      background-color: #fff;
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+
+    .kanban-card-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .kanban-card-meta {
+      font-size: 11px;
+      color: #777;
+    }
+
+    .form-field {
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .form-field label {
+      display: block;
+      margin-bottom: 2px;
+      font-weight: 600;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+    }
+
+    .pill-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      background-color: #e3f2fd;
+      color: #0d47a1;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .matrix-table th,
+    .matrix-table td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .matrix-table th {
+      background-color: #f0f0f0;
+    }
+
+    .zone-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #fff;
+    }
+
+    .zone-high {
+      background-color: #d32f2f;
+    }
+    .zone-elevated {
+      background-color: #f9a825;
+    }
+    .zone-standard {
+      background-color: #1976d2;
+    }
+    .zone-public {
+      background-color: #757575;
+    }
+
     @media (max-width: 900px) {
       .layout {
         grid-template-columns: 1fr;
@@ -260,11 +392,21 @@
         padding-top: 16px;
       }
 
-      .two-column, .full-width, .one-quarter {
+      .two-column,
+      .full-width,
+      .one-quarter,
+      .half-width {
         grid-column: span 12;
       }
     }
 
+    /* Views generisch ausblendbar */
+    .view {
+      display: none;
+    }
+    .view.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -273,35 +415,35 @@
     <aside class="sidebar">
       <h2>Dashboards</h2>
       <ul class="nav-list">
-        <li class="nav-item">
+        <li class="nav-item active" data-view="portfolio">
           <span class="nav-icon"></span>
           Portfolio
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-view="process">
           <span class="nav-icon"></span>
           Prozess (Kanban)
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-view="input">
           <span class="nav-icon"></span>
           Input (Formulare/AI)
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-view="framework">
           <span class="nav-icon"></span>
           Framework/Governance
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-view="object">
           <span class="nav-icon"></span>
           Objekt/Pläne
         </li>
-        <li class="nav-item active">
+        <li class="nav-item" data-view="executive">
           <span class="nav-icon"></span>
           Executive
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-view="risk">
           <span class="nav-icon"></span>
           Risiken & Maßnahmen
         </li>
-        <li class="nav-item">
+        <li class="nav-item" data-view="emergency">
           <span class="nav-icon"></span>
           Emergency & Crisis
         </li>
@@ -310,194 +452,863 @@
 
     <!-- Header -->
     <header class="header">
-      <div class="header-title">
-        RSMS – Risk Security Management System
+      <div>
+        <div class="header-title">RSMS – Risk Security Management System</div>
+        <div class="header-subtitle">Demo UI basierend auf dem SRS</div>
+      </div>
+      <div class="header-subtitle">
+        Rolle: Management / Consultant
       </div>
     </header>
 
     <!-- Hauptbereich -->
     <main class="main">
-      <div class="page-title">Executive Dashboard</div>
+      <!-- Portfolio Dashboard -->
+      <section class="view active" id="view-portfolio">
+        <div class="page-title">Portfolio Dashboard</div>
+        <div class="page-subtitle">
+          Übersicht über alle Sicherheitsprojekte, Status und KPIs.
+        </div>
 
-      <div class="grid" style="margin-bottom: 16px;">
-        <!-- Gesamtrisiko-Ampel -->
-        <div class="card one-quarter">
-          <div class="card-title">Gesamtrisiko</div>
-          <div class="card-content">
-            <div class="status-traffic-light">
-              <div class="status-circle yellow"></div>
-              <div>
-                <div class="status-label">Erhöhte Aufmerksamkeit</div>
-                <div class="small-text">Trend: leicht steigend</div>
+        <div class="grid" style="margin-bottom: 16px;">
+          <div class="card half-width">
+            <div class="card-title">Projektübersicht</div>
+            <div class="card-content">
+              <table class="top-risks-table">
+                <thead>
+                  <tr>
+                    <th>Projekt</th>
+                    <th>Typ</th>
+                    <th>Status</th>
+                    <th>Risiko-Ampel</th>
+                    <th>PM</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>PRJ-001 Headquarters Security</td>
+                    <td>Object Protection</td>
+                    <td>Implementation</td>
+                    <td><span class="severity-pill severity-critical">Critical</span></td>
+                    <td>J. Müller</td>
+                  </tr>
+                  <tr>
+                    <td>PRJ-002 Cyber Resilience</td>
+                    <td>IT Protection</td>
+                    <td>Planning</td>
+                    <td><span class="severity-pill severity-high">High</span></td>
+                    <td>S. Becker</td>
+                  </tr>
+                  <tr>
+                    <td>PRJ-003 Event Summit 2026</td>
+                    <td>Event Security</td>
+                    <td>Operation</td>
+                    <td><span class="severity-pill severity-medium">Medium</span></td>
+                    <td>L. Wagner</td>
+                  </tr>
+                  <tr>
+                    <td>PRJ-004 Travel Security APAC</td>
+                    <td>Travel Security</td>
+                    <td>Planning</td>
+                    <td><span class="severity-pill severity-medium">Medium</span></td>
+                    <td>M. Fischer</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="small-text" style="margin-top: 8px;">
+                Darstellung der wichtigsten Projekte; im echten System filter- und klickbar.
+              </div>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">Portfolio-KPIs</div>
+            <div class="card-content">
+              <div class="grid">
+                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                  <div class="kpi-value">12</div>
+                  <div class="kpi-label">aktive Projekte</div>
+                  <div class="kpi-trend trend-up">▲ +2 vs. Vorjahr</div>
+                </div>
+                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                  <div class="kpi-value">4</div>
+                  <div class="kpi-label">Projekte in kritischem Status</div>
+                  <div class="kpi-trend trend-up">▲ +1</div>
+                </div>
+                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                  <div class="kpi-value">68%</div>
+                  <div class="kpi-label">Durchschnittlicher Maßnahmen-Fortschritt</div>
+                  <div class="kpi-trend trend-stable">■ stabil</div>
+                </div>
+                <div class="card half-width" style="box-shadow:none; border:1px solid #eee;">
+                  <div class="kpi-value">74%</div>
+                  <div class="kpi-label">Budgetverbrauch (gesamt)</div>
+                  <div class="kpi-trend trend-down">▼ -3% vs. Plan</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- KPI: Kritische Risiken -->
-        <div class="card one-quarter">
-          <div class="card-title">Kritische Risiken</div>
-          <div class="card-content">
-            <div class="kpi-value">5</div>
-            <div class="kpi-label">Risiken in Klasse "Critical"</div>
-            <div class="kpi-trend trend-up">▲ +2 seit letztem Monat</div>
+        <div class="grid">
+          <div class="card full-width">
+            <div class="card-title">Projektphasen-Status (9-Phasen-Workflow)</div>
+            <div class="card-content">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>Projekt</th>
+                    <th>Phase 1</th>
+                    <th>Phase 2</th>
+                    <th>Phase 3</th>
+                    <th>Phase 4</th>
+                    <th>Phase 5</th>
+                    <th>Phase 6</th>
+                    <th>Phase 7</th>
+                    <th>Phase 8</th>
+                    <th>Phase 9</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>HQ Security</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>●</td>
+                    <td>○</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>Cyber Resilience</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>●</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>Event Summit 2026</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>✔</td>
+                    <td>●</td>
+                    <td>●</td>
+                    <td>●</td>
+                    <td>●</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="small-text" style="margin-top: 8px;">
+                ✔ abgeschlossen · ● in Arbeit · ○ geplant · - nicht gestartet.
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <!-- KPI: Offene Maßnahmen -->
-        <div class="card one-quarter">
-          <div class="card-title">Offene Maßnahmen (High)</div>
-          <div class="card-content">
-            <div class="kpi-value">18</div>
-            <div class="kpi-label">davon 7 überfällig</div>
-            <div class="kpi-trend trend-up">▲ +3 überfällig</div>
-          </div>
+      <!-- Process Dashboard (Kanban) -->
+      <section class="view" id="view-process">
+        <div class="page-title">Process Dashboard (Kanban)</div>
+        <div class="page-subtitle">
+          Visualisierung der Workflow-Items über alle Phasen (Backlog bis Done).
         </div>
 
-        <!-- KPI: Compliance -->
-        <div class="card one-quarter">
-          <div class="card-title">Compliance-Status</div>
+        <div class="card full-width">
+          <div class="card-title">Projekt: HQ Security – Kanban Board</div>
           <div class="card-content">
-            <div class="kpi-value">82%</div>
-            <div class="kpi-label">durchschnittliche Framework-Abdeckung</div>
-            <div class="kpi-trend trend-stable">■ stabil zu Vormonat</div>
-          </div>
-        </div>
-      </div>
-      <!-- Zweite Reihe: Top Risiken & Compliance -->
-      <div class="grid" style="margin-bottom: 16px;">
+            <div class="kanban-board">
+              <div class="kanban-column">
+                <div class="kanban-column-title">Backlog</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Kick-off vorbereiten</div>
+                  <div class="kanban-card-meta">Typ: Task · Fällig: 10.01.</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Stakeholder-Analyse</div>
+                  <div class="kanban-card-meta">Typ: Task · Fällig: 12.01.</div>
+                </div>
+              </div>
 
-        <!-- Top 5 Risiken -->
-        <div class="card two-column">
-          <div class="card-title">Top 5 Risiken</div>
-          <div class="card-content">
-            <table class="top-risks-table">
-              <thead>
-                <tr>
-                  <th>Risiko</th>
-                  <th>Owner</th>
-                  <th>Residual Risk</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>R-001: Sabotage Produktionsstandort A</td>
-                  <td>Business Unit A</td>
-                  <td>
-                    <span class="severity-pill severity-critical">Critical</span>
-                  </td>
-                  <td>In Behandlung</td>
-                </tr>
-                <tr>
-                  <td>R-002: Ransomware-Angriff Zentrale</td>
-                  <td>CISO</td>
-                  <td>
-                    <span class="severity-pill severity-critical">Critical</span>
-                  </td>
-                  <td>Maßnahmenportfolio geplant</td>
-                </tr>
-                <tr>
-                  <td>R-003: Insider-Datenabfluss</td>
-                  <td>HR / Legal</td>
-                  <td>
-                    <span class="severity-pill severity-high">High</span>
-                  </td>
-                  <td>In Umsetzung</td>
-                </tr>
-                <tr>
-                  <td>R-004: Versorgungsausfall Standort B</td>
-                  <td>Operations</td>
-                  <td>
-                    <span class="severity-pill severity-high">High</span>
-                  </td>
-                  <td>Akzeptanzprüfung</td>
-                </tr>
-                <tr>
-                  <td>R-005: Reputationskrise durch Social Media</td>
-                  <td>Corporate Comm.</td>
-                  <td>
-                    <span class="severity-pill severity-medium">Medium</span>
-                  </td>
-                  <td>Maßnahmen teilweise umgesetzt</td>
-                </tr>
-              </tbody>
-            </table>
+              <div class="kanban-column">
+                <div class="kanban-column-title">In Process</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">PMESII-PT Analyse Standort A</div>
+                  <div class="kanban-card-meta">Typ: Analyse · Verantwortlich: Consultant</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">CARVER-Assessment Rechenzentrum</div>
+                  <div class="kanban-card-meta">Typ: Analyse · Fällig: 15.01.</div>
+                </div>
+              </div>
+
+              <div class="kanban-column">
+                <div class="kanban-column-title">Blocked</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Vertragsunterlagen Kunde</div>
+                  <div class="kanban-card-meta">Warten auf: Legal · Fällig: 08.01.</div>
+                </div>
+              </div>
+
+              <div class="kanban-column">
+                <div class="kanban-column-title">Waiting</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Freigabe Gate G3</div>
+                  <div class="kanban-card-meta">Warten auf: Risk Owner</div>
+                </div>
+              </div>
+
+              <div class="kanban-column">
+                <div class="kanban-column-title">Review</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Risiko-Register Entwurf</div>
+                  <div class="kanban-card-meta">Reviewer: Projektmanager</div>
+                </div>
+              </div>
+
+              <div class="kanban-column">
+                <div class="kanban-column-title">Done</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Gate G1 – Projektinitiierung</div>
+                  <div class="kanban-card-meta">Abgeschlossen: 03.01.</div>
+                </div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Gate G2 – Kontext validiert</div>
+                  <div class="kanban-card-meta">Abgeschlossen: 07.01.</div>
+                </div>
+              </div>
+            </div>
             <div class="small-text" style="margin-top: 8px;">
-              Klickbare Zeilen würden im echten System zum Detail-Risiko führen.
+              Im echten System: Drag & Drop zwischen Spalten, Filter nach Verantwortlichen, Fälligkeitsdatum, Typ etc.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Input Dashboard -->
+      <section class="view" id="view-input">
+        <div class="page-title">Input Dashboard (Formulare, Checklisten, AI)</div>
+        <div class="page-subtitle">
+          Zentrale Erfassung von Daten für Kick-off, Kontext, Analysen (PMESII-PT, CARVER, MK-SALUTE).
+        </div>
+
+        <div class="grid" style="margin-bottom: 16px;">
+          <div class="card half-width">
+            <div class="card-title">Kick-off Formular (Phase 1)</div>
+            <div class="card-content">
+              <div class="form-field">
+                <label>Projektname</label>
+                <input type="text" value="HQ Security Projekt" />
+              </div>
+              <div class="form-field">
+                <label>Mandant / Kunde</label>
+                <input type="text" value="Example AG" />
+              </div>
+              <div class="form-field">
+                <label>Projektart</label>
+                <select>
+                  <option>Object Protection</option>
+                  <option>Event Security</option>
+                  <option>IT Protection</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Startdatum</label>
+                <input type="date" />
+              </div>
+              <div class="form-field">
+                <label>Kurzbeschreibung</label>
+                <textarea rows="3">Schutz des Headquarters und Rechenzentrums...</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">PMESII-PT (Phase 3) – Schnellerfassung</div>
+            <div class="card-content">
+              <div class="form-field">
+                <label>Politik (P)</label>
+                <input type="range" min="1" max="10" value="6" />
+                <div class="small-text">Aktuelle Lage: Moderater politischer Druck, bevorstehende Wahlen.</div>
+              </div>
+              <div class="form-field">
+                <label>Militär/Sicherheit (M)</label>
+                <input type="range" min="1" max="10" value="3" />
+                <div class="small-text">Hohe Präsenz von Sicherheitskräften, stabile Lage.</div>
+              </div>
+              <div class="form-field">
+                <label>Wirtschaft (E)</label>
+                <input type="range" min="1" max="10" value="7" />
+                <div class="small-text">Wirtschaftlich angespannt, Lieferkettenrisiken.</div>
+              </div>
+              <div class="small-text" style="margin-top: 8px;">
+                Im echten System: Radar-Chart & Heatmap über alle Faktoren und Standorte.
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Compliance-Kacheln -->
-        <div class="card two-column">
-          <div class="card-title">Compliance nach Framework</div>
-          <div class="card-content">
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div>
-                <strong>ISO 27001</strong> – 78% erfüllt
-                <div class="small-text">17 offene Kontrollen (davon 4 kritisch)</div>
+        <div class="grid">
+          <div class="card half-width">
+            <div class="card-title">CARVER Asset-Erfassung</div>
+            <div class="card-content">
+              <div class="form-field">
+                <label>Asset-Name</label>
+                <input type="text" value="Rechenzentrum HQ" />
               </div>
-              <div>
-                <strong>NIST CSF</strong> – 83% erfüllt
-                <div class="small-text">5 offene High-Gap Bereiche</div>
+              <div class="form-field">
+                <label>Asset-Kategorie</label>
+                <select>
+                  <option>IT</option>
+                  <option>Physical</option>
+                  <option>Process</option>
+                  <option>Personnel</option>
+                  <option>Information</option>
+                </select>
               </div>
-              <div>
-                <strong>BSI IT-Grundschutz</strong> – 65% erfüllt
-                <div class="small-text">Schwerpunkt: Maßnahmen zu Netzwerksicherheit</div>
+              <div class="form-field">
+                <label>Criticality (1–5)</label>
+                <input type="number" min="1" max="5" value="5" />
               </div>
-              <div>
-                <strong>NIS2</strong> – 54% erfüllt
-                <div class="small-text">Handlungsbedarf in Governance & Incident Reporting</div>
+              <div class="form-field">
+                <label>Accessibility (1–5)</label>
+                <input type="number" min="1" max="5" value="3" />
+              </div>
+              <div class="form-field">
+                <label>Vulnerability (1–5)</label>
+                <input type="number" min="1" max="5" value="4" />
+              </div>
+              <div class="small-text">
+                Score-Berechnung und Priorisierung geschehen im Backend; hier nur UI-Mock.
+              </div>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">MK-SALUTE Threat Actor Profil (Kurzfassung)</div>
+            <div class="card-content">
+              <div class="form-field">
+                <label>Threat Actor Name</label>
+                <input type="text" value="APT-XZ" />
+              </div>
+              <div class="form-field">
+                <label>Motivationsstärke (1–10)</label>
+                <input type="number" min="1" max="10" value="8" />
+              </div>
+              <div class="form-field">
+                <label>Knowledge-Level (1–10)</label>
+                <input type="number" min="1" max="10" value="7" />
+              </div>
+              <div class="form-field">
+                <label>Aktivitätslevel</label>
+                <select>
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option selected>High</option>
+                  <option>Imminent</option>
+                </select>
+              </div>
+              <div class="small-text">
+                Im System würden hier Radar-Charts und historische Trends angezeigt.
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Dritte Reihe: Maßnahmen & Incidents -->
-      <div class="grid">
-
-        <!-- Maßnahmenstatus -->
-        <div class="card two-column">
-          <div class="card-title">Maßnahmen-Portfolio</div>
-          <div class="card-content">
-            <div class="kpi-value">134</div>
-            <div class="kpi-label">Maßnahmen insgesamt</div>
-            <ul class="small-text" style="margin-top: 8px; line-height: 1.6;">
-              <li>Umgesetzt: 68</li>
-              <li>In Umsetzung: 42</li>
-              <li>Geplant: 24</li>
-              <li>Überfällig: 9 (davon 4 kritisch)</li>
-            </ul>
-          </div>
+      <!-- Framework/Governance Dashboard -->
+      <section class="view" id="view-framework">
+        <div class="page-title">Framework & Governance Dashboard</div>
+        <div class="page-subtitle">
+          Darstellung des Compliance-Status über verschiedene Standards und Governance-Artefakte.
         </div>
 
-        <!-- Incidents / Crisis -->
-        <div class="card two-column">
-          <div class="card-title">Incidents & Krise</div>
-          <div class="card-content">
-            <div class="kpi-value">3</div>
-            <div class="kpi-label">aktive Incidents</div>
-            <ul class="small-text" style="margin-top: 8px; line-height: 1.6;">
-              <li>INC-2026-001 – Verdächtige Netzwerkaktivität (High)</li>
-              <li>INC-2026-002 – Phishing-Kampagne gegen VIPs (Medium)</li>
-              <li>INC-2026-003 – Lokaler Stromausfall Standort C (Medium)</li>
-            </ul>
-            <div class="small-text" style="margin-top: 8px;">
-              Keine aktive Krisenlage. Nächstes Krisen-Übungsszenario geplant: 15.02.2026.
+        <div class="grid" style="margin-bottom: 16px;">
+          <div class="card half-width">
+            <div class="card-title">Framework-Compliance</div>
+            <div class="card-content">
+              <table class="top-risks-table">
+                <thead>
+                  <tr>
+                    <th>Framework</th>
+                    <th>Erfüllung</th>
+                    <th>Offene Kontrollen</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>ISO 27001</td>
+                    <td>78%</td>
+                    <td>17 (4 kritisch)</td>
+                    <td><span class="severity-pill severity-high">High Gaps</span></td>
+                  </tr>
+                  <tr>
+                    <td>NIST CSF</td>
+                    <td>83%</td>
+                    <td>9</td>
+                    <td><span class="severity-pill severity-medium">Moderate Gaps</span></td>
+                  </tr>
+                  <tr>
+                    <td>BSI IT-Grundschutz</td>
+                    <td>65%</td>
+                    <td>26</td>
+                    <td><span class="severity-pill severity-critical">Critical Gaps</span></td>
+                  </tr>
+                  <tr>
+                    <td>NIS2</td>
+                    <td>54%</td>
+                    <td>41</td>
+                    <td><span class="severity-pill severity-critical">Critical Gaps</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">Governance-Dokumente</div>
+            <div class="card-content">
+              <ul class="small-text" style="line-height: 1.7;">
+                <li><strong>Security Policy</strong> – Version 1.3 – Nächste Review: 30.03.2026 – Status: Freigegeben</li>
+                <li><strong>Incident Response Plan</strong> – Version 2.0 – Nächste Review: 15.02.2026 – Status: Freigegeben</li>
+                <li><strong>Awareness-Richtlinie</strong> – Version 0.9 – Nächste Review: 10.01.2026 – Status: Entwurf</li>
+                <li><strong>BCM-Rahmenwerk</strong> – Version 1.0 – Nächste Review: 01.07.2026 – Status: Freigegeben</li>
+              </ul>
+              <div class="small-text" style="margin-top: 8px;">
+                Im System wären hier Links zu Dokumenten, Versionierung & Freigabe-Workflow.
+              </div>
             </div>
           </div>
         </div>
 
-      </div>
+        <div class="grid">
+          <div class="card full-width">
+            <div class="card-title">Abhängigkeiten: Policy → Prozess → Kontrolle → Maßnahme</div>
+            <div class="card-content">
+              <div class="small-text">
+                Beispiel für eine Abhängigkeitskette:
+              </div>
+              <ul class="small-text" style="line-height: 1.7; margin-top: 8px;">
+                <li><strong>Policy:</strong> Zugangskontrollrichtlinie</li>
+                <li><strong>Prozess:</strong> Onboarding/Offboarding von Mitarbeitern</li>
+                <li><strong>Kontrolle:</strong> Review von Zugriffsrechten alle 6 Monate</li>
+                <li><strong>Maßnahme:</strong> Automatisierter Abgleich HR-System / IAM-System</li>
+              </ul>
+              <div class="small-text" style="margin-top: 8px;">
+                Im echten System würde hier ein interaktiver Graph mit Impact-Analyse angezeigt.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Object/Plan Dashboard -->
+      <section class="view" id="view-object">
+        <div class="page-title">Object/Plan Dashboard (2D/3D – Mock)</div>
+        <div class="page-subtitle">
+          Übersicht der Standorte, Zonen, Assets und Maßnahmen auf einer abstrakten Planansicht.
+        </div>
+
+        <div class="grid">
+          <div class="card half-width">
+            <div class="card-title">Standort-Übersicht</div>
+            <div class="card-content">
+              <ul class="small-text" style="line-height: 1.7;">
+                <li><strong>HQ Campus</strong> – Lat: 48.1, Lon: 11.6 – 3 Gebäude, 12 Zonen</li>
+                <li><strong>Rechenzentrum</strong> – Lat: 48.15, Lon: 11.58 – 1 Gebäude, 6 Zonen</li>
+                <li><strong>Standort B</strong> – Lat: 50.1, Lon: 8.6 – 2 Gebäude, 8 Zonen</li>
+              </ul>
+              <div class="small-text" style="margin-top: 8px;">
+                Im System: Kartenintegration (GIS), Plan-Upload (PDF/CAD), Layersteuerung.
+              </div>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">Zonen (abstrakte Darstellung)</div>
+            <div class="card-content">
+              <table class="top-risks-table">
+                <thead>
+                  <tr>
+                    <th>Zone</th>
+                    <th>Sicherheitslevel</th>
+                    <th>Assets (Auszug)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>HQ-01 Eingangshalle</td>
+                    <td><span class="zone-badge zone-public">Public</span></td>
+                    <td>Empfang, Besucher-Terminals</td>
+                  </tr>
+                  <tr>
+                    <td>HQ-02 Bürofläche 3. OG</td>
+                    <td><span class="zone-badge zone-standard">Standard</span></td>
+                    <td>Arbeitsplätze, Drucker</td>
+                  </tr>
+                  <tr>
+                    <td>HQ-03 Serverraum</td>
+                    <td><span class="zone-badge zone-high">High Security</span></td>
+                    <td>Server, Netzwerkinfrastruktur</td>
+                  </tr>
+                  <tr>
+                    <td>HQ-04 Vorstandsetage</td>
+                    <td><span class="zone-badge zone-elevated">Elevated</span></td>
+                    <td>Vorstandsbüros, Meetingräume</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="small-text" style="margin-top: 8px;">
+                Farbcodierung angelehnt an High/Elevated/Standard/Public-Zonen.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Executive Dashboard -->
+      <section class="view" id="view-executive">
+        <div class="page-title">Executive Dashboard</div>
+        <div class="page-subtitle">
+          Aggregierte Sicht für Management-Entscheidungen (Risiken, Compliance, Maßnahmen, Incidents).
+        </div>
+
+        <div class="grid" style="margin-bottom: 16px;">
+          <div class="card one-quarter">
+            <div class="card-title">Gesamtrisiko</div>
+            <div class="card-content">
+              <div class="status-traffic-light">
+                <div class="status-circle yellow"></div>
+                <div>
+                  <div class="status-label">Erhöhte Aufmerksamkeit</div>
+                  <div class="small-text">Trend: leicht steigend</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card one-quarter">
+            <div class="card-title">Kritische Risiken</div>
+            <div class="card-content">
+              <div class="kpi-value">5</div>
+              <div class="kpi-label">Risiken in Klasse "Critical"</div>
+              <div class="kpi-trend trend-up">▲ +2 seit letztem Monat</div>
+            </div>
+          </div>
+
+          <div class="card one-quarter">
+            <div class="card-title">Offene Maßnahmen (High)</div>
+            <div class="card-content">
+              <div class="kpi-value">18</div>
+              <div class="kpi-label">davon 7 überfällig</div>
+              <div class="kpi-trend trend-up">▲ +3 überfällig</div>
+            </div>
+          </div>
+
+          <div class="card one-quarter">
+            <div class="card-title">Compliance-Status</div>
+            <div class="card-content">
+              <div class="kpi-value">82%</div>
+              <div class="kpi-label">durchschnittliche Framework-Abdeckung</div>
+              <div class="kpi-trend trend-stable">■ stabil zu Vormonat</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-bottom: 16px;">
+          <div class="card half-width">
+            <div class="card-title">Top 5 Risiken</div>
+            <div class="card-content">
+              <table class="top-risks-table">
+                <thead>
+                  <tr>
+                    <th>Risiko</th>
+                    <th>Owner</th>
+                    <th>Residual Risk</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>R-001: Sabotage Produktionsstandort A</td>
+                    <td>Business Unit A</td>
+                    <td><span class="severity-pill severity-critical">Critical</span></td>
+                    <td>In Behandlung</td>
+                  </tr>
+                  <tr>
+                    <td>R-002: Ransomware-Angriff Zentrale</td>
+                    <td>CISO</td>
+                    <td><span classseverity-pill severity-critical">Critical</span></td>
+                    <td>Maßnahmenportfolio geplant</td>
+                  </tr>
+                  <tr>
+                    <td>R-003: Insider-Datenabfluss</td>
+                    <td>HR / Legal</td>
+                    <td><span class="severity-pill severity-high">High</span></td>
+                    <td>In Umsetzung</td>
+                  </tr>
+                  <tr>
+                    <td>R-004: Versorgungsausfall Standort B</td>
+                    <td>Operations</td>
+                    <td><span class="severity-pill severity-high">High</span></td>
+                    <td>Akzeptanzprüfung</td>
+                  </tr>
+                  <tr>
+                    <td>R-005: Reputationskrise Social Media</td>
+                    <td>Corp. Comm.</td>
+                    <td><span class="severity-pill severity-medium">Medium</span></td>
+                    <td>Maßnahmen teilweise umgesetzt</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">Compliance nach Framework</div>
+            <div class="card-content">
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div>
+                  <strong>ISO 27001</strong> – 78% erfüllt
+                  <div class="small-text">17 offene Kontrollen (4 kritisch)</div>
+                </div>
+                <div>
+                  <strong>NIST CSF</strong> – 83% erfüllt
+                  <div class="small-text">5 offene High-Gap Bereiche</div>
+                </div>
+                <div>
+                  <strong>BSI IT-Grundschutz</strong> – 65% erfüllt
+                  <div class="small-text">Mehrere Lücken in Netzwerksicherheit</div>
+                </div>
+                <div>
+                  <strong>NIS2</strong> – 54% erfüllt
+                  <div class="small-text">Handlungsbedarf in Governance & Reporting</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card half-width">
+            <div class="card-title">Maßnahmen-Portfolio</div>
+            <div class="card-content">
+              <div class="kpi-value">134</div>
+              <div class="kpi-label">Maßnahmen insgesamt</div>
+              <ul class="small-text" style="margin-top:8px;line-height:1.6;">
+                <li>Umgesetzt: 68</li>
+                <li>In Umsetzung: 42</li>
+                <li>Geplant: 24</li>
+                <li>Überfällig: 9 (4 kritisch)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">Incidents & Krisenstatus</div>
+            <div class="card-content">
+              <div class="kpi-value">3</div>
+              <div class="kpi-label">aktive Incidents</div>
+              <ul class="small-text" style="margin-top:8px;line-height:1.6;">
+                <li>INC-2026-001 – Verdächtige Netzwerkaktivität (High)</li>
+                <li>INC-2026-002 – Phishing-Kampagne gegen VIPs (Medium)</li>
+                <li>INC-2026-003 – Stromausfall Standort C (Medium)</li>
+              </ul>
+              <div class="small-text" style="margin-top:8px;">
+                Aktuell keine aktive Krisenlage. Nächste Übung: 15.02.2026.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Risk & Measures Dashboard -->
+      <section class="view" id="view-risk">
+        <div class="page-title">Risk & Measures Dashboard</div>
+        <div class="page-subtitle">
+          Detailansicht des Risikoregisters und verknüpfter Maßnahmen.
+        </div>
+
+        <div class="grid" style="margin-bottom: 16px;">
+          <div class="card full-width">
+            <div class="card-title">Risikoregister (Auszug)</div>
+            <div class="card-content">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Risiko</th>
+                    <th>Kategorie</th>
+                    <th>Likelihood</th>
+                    <th>Impact</th>
+                    <th>Criticality</th>
+                    <th>Treatment</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>R-001</td>
+                    <td>Sabotage Produktionsstandort A</td>
+                    <td>Security</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>20</td>
+                    <td>Reduce</td>
+                    <td>In Behandlung</td>
+                  </tr>
+                  <tr>
+                    <td>R-002</td>
+                    <td>Ransomware-Angriff HQ</td>
+                    <td>Security</td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>15</td>
+                    <td>Reduce/Transfer</td>
+                    <td>Portfolio geplant</td>
+                  </tr>
+                  <tr>
+                    <td>R-003</td>
+                    <td>Insider-Datenabfluss</td>
+                    <td>Compliance</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>12</td>
+                    <td>Reduce</td>
+                    <td>In Umsetzung</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card half-width">
+            <div class="card-title">Beispielmaßnahmen zu R-001</div>
+            <div class="card-content">
+              <ul class="small-text" style="line-height:1.7;">
+                <li><strong>M-101:</strong> Ausbau Perimeter-Schutz (Zäune, Zutrittsregelung) – Status: In Umsetzung</li>
+                <li><strong>M-102:</strong> Erweiterung Videoüberwachung – Status: Geplant</li>
+                <li><strong>M-103:</strong> Schulung Sicherheitspersonal – Status: Abgeschlossen</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card half-width">
+            <div class="card-title">Maturitätsentwicklung (konzeptionell)</div>
+            <div class="card-content">
+              <div class="small-text">
+                Beispiel: Informationssicherheit – Ziel Maturity Level 5, aktuell Level 3.
+              </div>
+              <ul class="small-text" style="margin-top:8px;line-height:1.7;">
+                <li>Ist: Level 3 – Definierte Prozesse, aber wenig Messung</li>
+                <li>Ziel: Level 5 – Quantitativ gesteuert & kontinuierliche Verbesserung</li>
+                <li>Geplante Maßnahmen: Automatisierte KPIs, regelmäßige Audits, Tooling-Erweiterung</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Emergency & Crisis Dashboard -->
+      <section class="view" id="view-emergency">
+        <div class="page-title">Emergency & Crisis Management Dashboard</div>
+        <div class="page-subtitle">
+          Echtzeit-Übersicht über Warnungen, aktive Pläne, Ressourcen und Kommunikation (Mock).
+        </div>
+
+        <div class="grid" style="margin-bottom:16px;">
+          <div class="card half-width">
+            <div class="card-title">Aktuelle Warnungen</div>
+            <div class="card-content">
+              <ul class="small-text" style="line-height:1.7;">
+                <li><strong>W-2026-001</strong> – Sturmwarnung Region HQ – Severity: High</li>
+                <li><strong>W-2026-002</strong> – Erhöhte Cyberbedrohung durch neue Ransomware-Kampagne – Severity: Medium</li>
+                <li><strong>W-2026-003</strong> – Politische Demonstrationen in Nähe Standort B – Severity: Low</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">Status Notfall-/Krisenpläne</div>
+            <div class="card-content">
+              <ul class="small-text" style="line-height:1.7;">
+                <li><strong>Evakuierungsplan HQ</strong> – Version 2.1 – Status: Freigegeben – Nächste Übung: 01.03.2026</li>
+                <li><strong>Cyber Incident Playbook</strong> – Version 1.5 – Status: Aktivierbar</li>
+                <li><strong>Brand- & Explosion-Playbook</strong> – Version 1.0 – Status: Aktivierbar</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card half-width">
+            <div class="card-title">Ressourcen & Teams</div>
+            <div class="card-content">
+              <ul class="small-text" style="line-height:1.7;">
+                <li>Krisenteam Zentrale – Status: Standby – Besetzung: 5/6</li>
+                <li>IT Incident Response Team – Status: Standby – Besetzung: 4/5</li>
+                <li>Erste-Hilfe-Teams HQ – Status: Bereit – Besetzung: 12/12</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card half-width">
+            <div class="card-title">Kommunikationsstatus</div>
+            <div class="card-content">
+              <ul class="small-text" style="line-height:1.7;">
+                <li>Letzte Alarmierung: 05.01.2026 – Thema: Evakuierungsübung HQ</li>
+                <li>SMS-Zustellung: 99% – E-Mail: 98% – App/PUSH: 95%</li>
+                <li>Offene Rückmeldungen: 3 (noch nicht bestätigt)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
-  <!-- Optional: kleines bisschen JS, um später interaktive Elemente zu ergänzen -->
   <script>
-    // Hier könnte man später dynamisch Daten aus einer API einfügen.
-    // Für jetzt ist alles statisch, damit du das Layout siehst.
+    // Einfaches Umschalten der Views anhand data-view-Attribut
+    (function() {
+      const navItems = document.querySelectorAll('.nav-item');
+      const views = document.querySelectorAll('.view');
+
+      function showView(name) {
+        views.forEach(v => {
+          if (v.id === 'view-' + name) {
+            v.classList.add('active');
+          } else {
+            v.classList.remove('active');
+          }
+        });
+      }
+
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const name = item.getAttribute('data-view');
+          if (!name) return;
+
+          navItems.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          showView(name);
+        });
+      });
+
+      // Initial: Portfolio sichtbar (entspricht aktiver Nav)
+      showView('portfolio');
+    })();
   </script>
 </body>
 </html>
