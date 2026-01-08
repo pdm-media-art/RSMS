@@ -1,1 +1,38 @@
-
+[
+  {
+    "id": "PRJ-001",
+    "name": "Headquarters Security",
+    "type": "Object Protection",
+    "status": "Implementation",
+    "riskLevel": "Critical",
+    "projectManager": "J. Müller",
+    "phases": [true, true, true, true, "in-progress", "planned", null, null, null]
+  },
+  {
+    "id": "PRJ-002",
+    "name": "Cyber Resilience",
+    "type": "IT Protection",
+    "status": "Planning",
+    "riskLevel": "High",
+    "projectManager": "S. Becker",
+    "phases": [true, true, "in-progress", "planned", null, null, null, null, null]
+  },
+  {
+    "id": "PRJ-003",
+    "name": "Event Summit 2026",
+    "type": "Event Security",
+    "status": "Operation",
+    "riskLevel": "Medium",
+    "projectManager": "L. Wagner",
+    "phases": [true, true, true, true, true, "in-progress", "in-progress", "in-progress", "in-progress"]
+  },
+  {
+    "id": "PRJ-004",
+    "name": "Travel Security APAC",
+    "type": "Travel Security",
+    "status": "Planning",
+    "riskLevel": "Medium",
+    "projectManager": "M. Fischer",
+    "phases": [true, "in-progress", "planned", null, null, null, null, null, null]
+  }
+]
