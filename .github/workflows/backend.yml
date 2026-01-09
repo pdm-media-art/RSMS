@@ -1,0 +1,50 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      # 1. Repo auschecken
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Node installieren
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'   # oder '18', je nach Wunsch
+
+      # 3. Dependencies installieren
+      - name: Install dependencies
+        run: npm install
+
+      # 4. (Optional) Lint/Tests – aktuell Dummy-Test
+      - name: Run tests
+        run: npm test
+
+      # 5. Einfacher Start-Check mit Health Endpoint
+      - name: Start backend and check health
+        run: |
+          # Server im Hintergrund starten
+          node server.js &
+          SERVER_PID=$!
+
+          # Warten, bis Server hochgefahren ist
+          sleep 5
+
+          # Health-Check aufrufen
+          curl -f http://localhost:3000/api/health
+
+          # Server wieder stoppen
+          kill $SERVER_PID
