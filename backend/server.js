@@ -1,3 +1,4 @@
+// backend/server.js
 const express = require('express');
 const cors = require('cors');
 const { randomUUID } = require('crypto');
@@ -23,12 +24,11 @@ app.post('/api/tenants/:tenantId/projects', (req, res) => {
     });
   }
 
-  // aktuelle Projekte aus Datei lesen
   const projects = readJson('projects.json');
 
   const projectId = randomUUID();
-
   const now = new Date().toISOString();
+
   const project = {
     id: projectId,
     tenantId,
@@ -43,10 +43,7 @@ app.post('/api/tenants/:tenantId/projects', (req, res) => {
     updatedAt: now
   };
 
-  // Projekt hinzufügen
   projects.push(project);
-
-  // zurück in Datei schreiben
   writeJson('projects.json', projects);
 
   return res.status(201).json(project);
@@ -55,10 +52,8 @@ app.post('/api/tenants/:tenantId/projects', (req, res) => {
 // Projekte eines Tenants auflisten
 app.get('/api/tenants/:tenantId/projects', (req, res) => {
   const { tenantId } = req.params;
-
   const projects = readJson('projects.json');
   const filtered = projects.filter(p => p.tenantId === tenantId);
-
   res.json(filtered);
 });
 
