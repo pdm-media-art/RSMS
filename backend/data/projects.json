@@ -1,38 +1,38 @@
 [
   {
-    "id": "PRJ-001",
-    "name": "Headquarters Security",
-    "type": "Object Protection",
-    "status": "Implementation",
-    "riskLevel": "Critical",
-    "projectManager": "J. Müller",
-    "phases": [true, true, true, true, "in-progress", "planned", null, null, null]
-  },
-  {
-    "id": "PRJ-002",
-    "name": "Cyber Resilience",
-    "type": "IT Protection",
-    "status": "Planning",
+    "id": "P-001",
+    "name": "HQ Security Upgrade",
+    "type": "Site",
+    "status": "In Umsetzung",
     "riskLevel": "High",
-    "projectManager": "S. Becker",
+    "projectManager": "M. Schmidt",
     "phases": [true, true, "in-progress", "planned", null, null, null, null, null]
   },
   {
-    "id": "PRJ-003",
-    "name": "Event Summit 2026",
-    "type": "Event Security",
-    "status": "Operation",
-    "riskLevel": "Medium",
-    "projectManager": "L. Wagner",
-    "phases": [true, true, true, true, true, "in-progress", "in-progress", "in-progress", "in-progress"]
+    "id": "P-002",
+    "name": "Data Center Hardening",
+    "type": "IT",
+    "status": "Analyse",
+    "riskLevel": "Critical",
+    "projectManager": "A. Keller",
+    "phases": [true, "in-progress", "planned", null, null, null, null, null, null]
   },
   {
-    "id": "PRJ-004",
-    "name": "Travel Security APAC",
-    "type": "Travel Security",
-    "status": "Planning",
+    "id": "P-003",
+    "name": "Access Control Modernization",
+    "type": "Site",
+    "status": "Planung",
     "riskLevel": "Medium",
-    "projectManager": "M. Fischer",
-    "phases": [true, "in-progress", "planned", null, null, null, null, null, null]
+    "projectManager": "L. Braun",
+    "phases": [true, true, true, "in-progress", "planned", null, null, null, null]
+  },
+  {
+    "id": "P-004",
+    "name": "Global Travel Security",
+    "type": "Process",
+    "status": "Konzeption",
+    "riskLevel": "High",
+    "projectManager": "T. Fischer",
+    "phases": [true, true, "in-progress", "planned", null, null, null, null, null]
   }
 ]
