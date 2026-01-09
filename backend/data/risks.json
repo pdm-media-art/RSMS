@@ -1,62 +1,42 @@
 [
   {
     "id": "R-001",
-    "title": "Sabotage Produktionsstandort A",
-    "category": "Security",
-    "likelihood": 4,
-    "impact": 5,
-    "criticality": 20,
-    "treatment": "Reduce",
-    "status": "In Behandlung",
-    "owner": "Business Unit A",
-    "residualLevel": "Critical"
+    "title": "Ausfall Rechenzentrum HQ",
+    "owner": "CIO",
+    "criticality": 95,
+    "residualLevel": "Critical",
+    "status": "Open"
   },
   {
     "id": "R-002",
-    "title": "Ransomware-Angriff Zentrale",
-    "category": "Security",
-    "likelihood": 3,
-    "impact": 5,
-    "criticality": 15,
-    "treatment": "Reduce/Transfer",
-    "status": "Portfolio geplant",
-    "owner": "CISO",
-    "residualLevel": "Critical"
+    "title": "Physischer Einbruch kritischer Bereich",
+    "owner": "CSO",
+    "criticality": 88,
+    "residualLevel": "Critical",
+    "status": "Mitigation laufend"
   },
   {
     "id": "R-003",
-    "title": "Insider-Datenabfluss",
-    "category": "Compliance",
-    "likelihood": 3,
-    "impact": 4,
-    "criticality": 12,
-    "treatment": "Reduce",
-    "status": "In Umsetzung",
-    "owner": "HR / Legal",
-    "residualLevel": "High"
+    "title": "Social Engineering Kampagne",
+    "owner": "CISO",
+    "criticality": 75,
+    "residualLevel": "High",
+    "status": "Mitigation geplant"
   },
   {
     "id": "R-004",
-    "title": "Versorgungsausfall Standort B",
-    "category": "Operational",
-    "likelihood": 2,
-    "impact": 4,
-    "criticality": 8,
-    "treatment": "Accept",
-    "status": "Akzeptanzprüfung",
-    "owner": "Operations",
-    "residualLevel": "High"
+    "title": "Lieferketten-Störung",
+    "owner": "COO",
+    "criticality": 60,
+    "residualLevel": "Medium",
+    "status": "Beobachtung"
   },
   {
     "id": "R-005",
-    "title": "Reputationskrise Social Media",
-    "category": "Strategic",
-    "likelihood": 3,
-    "impact": 3,
-    "criticality": 9,
-    "treatment": "Reduce",
-    "status": "Maßnahmen teilweise umgesetzt",
-    "owner": "Corp. Comm.",
-    "residualLevel": "Medium"
+    "title": "Brand im Lagerstandort",
+    "owner": "HSE Manager",
+    "criticality": 70,
+    "residualLevel": "High",
+    "status": "Kontrollen verstärkt"
   }
 ]
