@@ -429,6 +429,46 @@ body {
   background-color: #6b7280;
 }
 
+/* Kleine Badges für Status/Typen */
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.badge-status-open {
+  background-color: var(--danger-soft);
+  color: var(--danger);
+}
+
+.badge-status-progress {
+  background-color: #fff8e1;
+  color: #b45309;
+}
+
+.badge-status-done {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+
+/* Maßnahmenliste unter einem Risiko */
+.measures-list {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.measures-list ul {
+  margin: 4px 0 0 16px;
+  padding-left: 0;
+}
+
+.measures-list li {
+  margin-bottom: 2px;
+}
+
 .view {
   display: none;
 }
