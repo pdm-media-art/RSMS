@@ -2,19 +2,67 @@
   {
     "id": "M-001",
     "riskId": "R-001",
-    "title": "Redundantes Rechenzentrum aufbauen",
-    "status": "In Umsetzung"
+    "title": "Aufbau redundantes Rechenzentrum",
+    "category": "Preventive",
+    "type": "Technical",
+    "status": "In Progress",
+    "effectiveness": 8,
+    "plannedStart": "2026-02-01",
+    "plannedEnd": "2026-06-30"
   },
   {
     "id": "M-002",
-    "riskId": "R-002",
-    "title": "Zutrittskontrolle upgraden",
-    "status": "Geplant"
+    "riskId": "R-001",
+    "title": "Optimierung Notfallwiederanlaufplan (DR-Plan)",
+    "category": "Reactive",
+    "type": "Organizational",
+    "status": "Planned",
+    "effectiveness": 7,
+    "plannedStart": "2026-03-01",
+    "plannedEnd": "2026-05-15"
   },
   {
     "id": "M-003",
+    "riskId": "R-002",
+    "title": "Upgrade Zutrittskontrolle (mehrstufig, biometrisch)",
+    "category": "Preventive",
+    "type": "Physical",
+    "status": "In Progress",
+    "effectiveness": 9,
+    "plannedStart": "2026-01-15",
+    "plannedEnd": "2026-04-30"
+  },
+  {
+    "id": "M-004",
     "riskId": "R-003",
-    "title": "Awareness-Kampagne durchführen",
-    "status": "Geplant"
+    "title": "Awareness-Kampagne Social Engineering",
+    "category": "Preventive",
+    "type": "Personnel",
+    "status": "Planned",
+    "effectiveness": 7,
+    "plannedStart": "2026-02-01",
+    "plannedEnd": "2026-02-28"
+  },
+  {
+    "id": "M-005",
+    "riskId": "R-004",
+    "title": "Abschluss zusätzlicher Lieferantenverträge",
+    "category": "Transfer",
+    "type": "Organizational",
+    "status": "Planned",
+    "effectiveness": 6,
+    "plannedStart": "2026-03-01",
+    "plannedEnd": "2026-07-31"
+  },
+  {
+    "id": "M-006",
+    "riskId": "R-005",
+    "title": "Erweiterung Brandschutzmaßnahmen & Übungen",
+    "category": "Preventive",
+    "type": "Physical",
+    "status": "Done",
+    "effectiveness": 8,
+    "plannedStart": "2025-11-01",
+    "plannedEnd": "2025-12-31"
   }
 ]
