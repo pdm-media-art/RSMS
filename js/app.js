@@ -29,7 +29,8 @@
 })();
 
 // === Daten aus statischen JSON-Dateien laden (für GitHub Pages) ===
-const DATA_BASE = './data';
+// Pfad angepasst: Daten liegen in /backend/data
+const DATA_BASE = './backend/data';
 
 async function loadJson(file) {
   const res = await fetch(`${DATA_BASE}/${file}`);
