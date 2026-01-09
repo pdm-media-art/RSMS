@@ -28,8 +28,7 @@
   showView('portfolio');
 })();
 
-// === Daten aus statischen JSON-Dateien laden (für GitHub Pages) ===
-// Pfad angepasst: Daten liegen in /backend/data
+// === Datenbasis (JSON unter /backend/data) ===
 const DATA_BASE = './backend/data';
 
 async function loadJson(file) {
@@ -138,7 +137,7 @@ function renderExecutiveTopRisks(risks) {
   tbody.innerHTML = '';
 
   const top = [...risks]
-    .sort((a, b) => b.criticality - a.criticality)
+    .sort((a, b) => (b.criticality || 0) - (a.criticality || 0))
     .slice(0, 5);
 
   top.forEach(risk => {
@@ -148,7 +147,7 @@ function renderExecutiveTopRisks(risks) {
     tdTitle.textContent = `${risk.id}: ${risk.title}`;
 
     const tdOwner = document.createElement('td');
-    tdOwner.textContent = risk.owner || '';
+    tdOwner.textContent = risk.riskOwner || risk.owner || '';
 
     const tdResidual = document.createElement('td');
     const span = document.createElement('span');
@@ -173,15 +172,154 @@ function renderExecutiveTopRisks(risks) {
 
 function renderExecutiveKPIs(risks) {
   const totalCritical = risks.filter(r => r.residualLevel === 'Critical').length;
-  const totalHigh = risks.filter(r => r.residualLevel === 'High').length;
-  const totalMedium = risks.filter(r => r.residualLevel === 'Medium').length;
-
   const criticalElem = document.querySelector('#view-executive .grid:nth-of-type(1) .card:nth-of-type(2) .kpi-value');
   if (criticalElem) criticalElem.textContent = String(totalCritical);
 
-  console.log('Risiko-Verteilung:', { totalCritical, totalHigh, totalMedium });
+  console.log('Risiko-Verteilung Executive:', { totalCritical });
+}
+
+// --- Risk & Measures Dashboard ---
+async function initRiskDashboard() {
+  try {
+    const [risks, measures] = await Promise.all([
+      loadJson('risks.json'),
+      loadJson('measures.json')
+    ]);
+
+    renderRiskKPIs(risks, measures);
+    renderRiskRegister(risks, measures);
+  } catch (err) {
+    console.warn('Konnte Risk Dashboard Daten nicht laden:', err);
+  }
+}
+
+function renderRiskKPIs(risks, measures) {
+  const totalRisks = risks.length;
+  const criticalRisks = risks.filter(r =>
+    (r.residualLevel || r.currentLevel || '').toLowerCase() === 'critical'.toLowerCase()
+  ).length;
+  const openMeasures = measures.filter(m => (m.status || '').toLowerCase() !== 'done').length;
+
+  const totalElem = document.getElementById('risk-kpi-total');
+  const criticalElem = document.getElementById('risk-kpi-critical');
+  const openMeasuresElem = document.getElementById('risk-kpi-open-measures');
+
+  if (totalElem) totalElem.textContent = String(totalRisks);
+  if (criticalElem) criticalElem.textContent = String(criticalRisks);
+  if (openMeasuresElem) openMeasuresElem.textContent = String(openMeasures);
+}
+
+function renderRiskRegister(risks, measures) {
+  const tbody = document.querySelector('#risk-register-table tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  // Sortiere z.B. nach Criticality absteigend
+  const sortedRisks = [...risks].sort((a, b) => (b.criticality || 0) - (a.criticality || 0));
+
+  sortedRisks.forEach(risk => {
+    // Risiko-Hauptzeile
+    const tr = document.createElement('tr');
+
+    const tdTitle = document.createElement('td');
+    tdTitle.textContent = `${risk.id}: ${risk.title}`;
+
+    const tdCategory = document.createElement('td');
+    tdCategory.textContent = risk.category || '';
+
+    const tdLikelihood = document.createElement('td');
+    tdLikelihood.textContent = risk.likelihood != null ? String(risk.likelihood) : '';
+
+    const tdImpact = document.createElement('td');
+    tdImpact.textContent = risk.impact != null ? String(risk.impact) : '';
+
+    const tdCriticality = document.createElement('td');
+    tdCriticality.textContent = risk.criticality != null ? String(risk.criticality) : '';
+
+    const tdStrategy = document.createElement('td');
+    tdStrategy.textContent = risk.treatmentStrategy || '';
+
+    const tdOwner = document.createElement('td');
+    tdOwner.textContent = risk.riskOwner || risk.owner || '';
+
+    const tdStatus = document.createElement('td');
+    const statusText = (risk.status || '').toLowerCase();
+    const statusBadge = document.createElement('span');
+    statusBadge.classList.add('badge');
+
+    if (statusText === 'open') {
+      statusBadge.classList.add('badge-status-open');
+      statusBadge.textContent = 'Open';
+    } else if (statusText === 'in progress' || statusText === 'mitigation laufend') {
+      statusBadge.classList.add('badge-status-progress');
+      statusBadge.textContent = 'In Progress';
+    } else if (statusText === 'closed' || statusText === 'resolved') {
+      statusBadge.classList.add('badge-status-done');
+      statusBadge.textContent = 'Closed';
+    } else {
+      statusBadge.textContent = risk.status || '';
+    }
+
+    tdStatus.appendChild(statusBadge);
+
+    tr.appendChild(tdTitle);
+    tr.appendChild(tdCategory);
+    tr.appendChild(tdLikelihood);
+    tr.appendChild(tdImpact);
+    tr.appendChild(tdCriticality);
+    tr.appendChild(tdStrategy);
+    tr.appendChild(tdOwner);
+    tr.appendChild(tdStatus);
+
+    tbody.appendChild(tr);
+
+    // Maßnahmen-Zeile
+    const linkedMeasures = measures.filter(m => m.riskId === risk.id);
+    if (linkedMeasures.length > 0) {
+      const trMeasures = document.createElement('tr');
+      const tdMeasures = document.createElement('td');
+      tdMeasures.colSpan = 8;
+
+      tdMeasures.innerHTML = renderMeasuresInline(linkedMeasures);
+      trMeasures.appendChild(tdMeasures);
+      tbody.appendChild(trMeasures);
+    }
+  });
+}
+
+function renderMeasuresInline(measures) {
+  const itemsHtml = measures.map(m => {
+    const status = (m.status || '').toLowerCase();
+    let statusClass = 'badge-status-open';
+    let statusLabel = m.status || '';
+
+    if (status === 'in progress') {
+      statusClass = 'badge-status-progress';
+      statusLabel = 'In Progress';
+    } else if (status === 'done' || status === 'completed') {
+      statusClass = 'badge-status-done';
+      statusLabel = 'Done';
+    }
+
+    return `
+      <li>
+        <strong>${m.id}</strong> – ${m.title}
+        <span class="badge ${statusClass}">${statusLabel}</span>
+      </li>
+    `;
+  }).join('');
+
+  return `
+    <div class="measures-list">
+      <div><strong>Maßnahmen:</strong></div>
+      <ul>
+        ${itemsHtml}
+      </ul>
+    </div>
+  `;
 }
 
 // Initialisierung beim Laden
 initPortfolio();
 initExecutive();
+initRiskDashboard();
