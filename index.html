@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>RSMS – Alle Dashboards (Demo)</title>
-  <!-- Pfad angepasst: CSS liegt in /css -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -372,13 +371,53 @@
       <section class="view" id="view-risk">
         <div class="page-title">Risiken & Maßnahmen</div>
         <div class="page-subtitle">
-          Übersicht über Risiken und dazugehörige Maßnahmen (Demo-Struktur).
+          Übersicht über Risiken, deren Bewertung und verknüpfte Maßnahmen (Auszug aus dem SRS: Risk Register + 4R + Maßnahmen).
         </div>
+
+        <div class="grid" style="margin-bottom: 16px;">
+          <div class="card half-width">
+            <div class="card-title">Risiko-Kennzahlen</div>
+            <div class="card-content">
+              <div class="grid">
+                <div class="card half-width" style="box-shadow:none; border:1px dashed var(--border);">
+                  <div class="kpi-value" id="risk-kpi-total">0</div>
+                  <div class="kpi-label">Risiken gesamt</div>
+                </div>
+                <div class="card half-width" style="box-shadow:none; border:1px dashed var(--border);">
+                  <div class="kpi-value" id="risk-kpi-critical">0</div>
+                  <div class="kpi-label">kritische Risiken (Critical)</div>
+                </div>
+                <div class="card half-width" style="box-shadow:none; border:1px dashed var(--border);">
+                  <div class="kpi-value" id="risk-kpi-open-measures">0</div>
+                  <div class="kpi-label">offene Maßnahmen</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="card full-width">
-          <div class="card-title">Beispiel-Risiko- und Maßnahmen-Ansicht</div>
+          <div class="card-title">Risiko- und Maßnahmen-Register (Demo-Auszug)</div>
           <div class="card-content">
-            <div class="small-text">
-              Später könnten hier die Risiken aus backend/data/risks.json und Maßnahmen aus backend/data/measures.json verknüpft dargestellt werden.
+            <table class="top-risks-table" id="risk-register-table">
+              <thead>
+                <tr>
+                  <th>Risiko</th>
+                  <th>Kategorie</th>
+                  <th>Likelihood</th>
+                  <th>Impact</th>
+                  <th>Criticality</th>
+                  <th>Strategy (4R)</th>
+                  <th>Owner</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- wird durch JS gefüllt -->
+              </tbody>
+            </table>
+            <div class="small-text" style="margin-top: 8px;">
+              Unter jedem Risiko werden verknüpfte Maßnahmen aus <code>measures.json</code> angezeigt.
             </div>
           </div>
         </div>
@@ -402,7 +441,6 @@
     </main>
   </div>
 
-  <!-- Pfad angepasst: JS liegt in /js -->
   <script src="js/app.js"></script>
 </body>
 </html>
