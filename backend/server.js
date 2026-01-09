@@ -1,44 +1,68 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
+const { randomUUID } = require('crypto');
+const { readJson, writeJson } = require('./dataStore');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-function loadJson(fileName) {
-  const filePath = path.join(__dirname, 'data', fileName);
-  const raw = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(raw);
-}
-
-// Projekte
-app.get('/api/projects', (req, res) => {
-  const projects = loadJson('projects.json');
-  res.json(projects);
+// Health Check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
-// Risiken
-app.get('/api/risks', (req, res) => {
-  const risks = loadJson('risks.json');
-  res.json(risks);
+// Projekt anlegen
+app.post('/api/tenants/:tenantId/projects', (req, res) => {
+  const { tenantId } = req.params;
+  const { name, type, startDate, plannedEndDate, projectManagerId, budget } = req.body;
+
+  if (!name || !type || !projectManagerId) {
+    return res.status(400).json({
+      error: 'name, type und projectManagerId sind Pflichtfelder'
+    });
+  }
+
+  // aktuelle Projekte aus Datei lesen
+  const projects = readJson('projects.json');
+
+  const projectId = randomUUID();
+
+  const now = new Date().toISOString();
+  const project = {
+    id: projectId,
+    tenantId,
+    name,
+    type,
+    status: 'PLANNING',
+    startDate: startDate || null,
+    plannedEndDate: plannedEndDate || null,
+    projectManagerId,
+    budget: budget || null,
+    createdAt: now,
+    updatedAt: now
+  };
+
+  // Projekt hinzufügen
+  projects.push(project);
+
+  // zurück in Datei schreiben
+  writeJson('projects.json', projects);
+
+  return res.status(201).json(project);
 });
 
-// Maßnahmen
-app.get('/api/measures', (req, res) => {
-  const measures = loadJson('measures.json');
-  res.json(measures);
-});
+// Projekte eines Tenants auflisten
+app.get('/api/tenants/:tenantId/projects', (req, res) => {
+  const { tenantId } = req.params;
 
-// Maßnahmen zu einem Risiko
-app.get('/api/risks/:id/measures', (req, res) => {
-  const riskId = req.params.id;
-  const measures = loadJson('measures.json').filter(m => m.riskId === riskId);
-  res.json(measures);
+  const projects = readJson('projects.json');
+  const filtered = projects.filter(p => p.tenantId === tenantId);
+
+  res.json(filtered);
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`RSMS backend running on http://localhost:${PORT}`);
+  console.log(`Backend läuft auf Port ${PORT}`);
 });
