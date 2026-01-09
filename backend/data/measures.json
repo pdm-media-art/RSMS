@@ -1,26 +1,20 @@
 [
   {
-    "id": "M-101",
+    "id": "M-001",
     "riskId": "R-001",
-    "name": "Ausbau Perimeter-Schutz",
-    "status": "In Umsetzung",
-    "category": "Physical",
-    "type": "Preventive"
+    "title": "Redundantes Rechenzentrum aufbauen",
+    "status": "In Umsetzung"
   },
   {
-    "id": "M-102",
-    "riskId": "R-001",
-    "name": "Erweiterung Videoüberwachung",
-    "status": "Geplant",
-    "category": "Physical",
-    "type": "Detective"
+    "id": "M-002",
+    "riskId": "R-002",
+    "title": "Zutrittskontrolle upgraden",
+    "status": "Geplant"
   },
   {
-    "id": "M-103",
-    "riskId": "R-001",
-    "name": "Schulung Sicherheitspersonal",
-    "status": "Abgeschlossen",
-    "category": "Personnel",
-    "type": "Preventive"
+    "id": "M-003",
+    "riskId": "R-003",
+    "title": "Awareness-Kampagne durchführen",
+    "status": "Geplant"
   }
 ]
